@@ -18,28 +18,13 @@
         transition: color 0.3s ease;
         background-color: #000;
       }
-      .monday {
-        color: #ffc107;
-        
-      }
-      .tuesday {
-        color: #e91e63;
-      }
-      .wednesday {
-        color: #4caf50;
-      }
-      .thursday {
-        color: #ff5722;
-      }
-      .friday {
-        color: #2193f0;
-      }
-      .saturday {
-        color: #ff0feb;
-      }
-      .sunday {
-        color: #ff0000
-      }
+      .monday { color: #ffc107; }
+      .tuesday { color: #e91e63; }
+      .wednesday { color: #4caf50; }
+      .thursday { color: #ff5722; }
+      .friday { color: #2193f0; }
+      .saturday { color: #ff0feb; }
+      .sunday { color: #ff0000; }
 
       .day-buttons {
         display: flex;
@@ -66,8 +51,7 @@
         border-collapse: collapse;
         margin-top: 10px;
       }
-      th,
-      td {
+      th, td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
@@ -85,6 +69,64 @@
       .container {
         padding: 15px;
       }
+      .vitamin-summary {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+      }
+      .vitamin-summary h3 {
+        margin-top: 0;
+        color: #333;
+      }
+      .vitamin-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+      }
+      .vitamin-item:last-child {
+        border-bottom: none;
+      }
+      .vitamin-name {
+        font-weight: bold;
+        color: #2c3e50;
+      }
+      .vitamin-usage {
+        color: #27ae60;
+      }
+      .vitamin-remaining {
+        color: #e67e22;
+      }
+      .vitamin-days-left {
+        color: #8e44ad;
+        font-size: 0.9em;
+      }
+      .low-stock {
+        background-color: #ffebee !important;
+        color: #c62828 !important;
+      }
+      .reset-button {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .reset-button:hover {
+        background: #c0392b;
+      }
+      .weekly-summary {
+        background: #e8f5e8;
+        border: 1px solid #4caf50;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+      }
     </style>
   </head>
   <body>
@@ -97,6 +139,7 @@
       <button onclick="showDay(4, 'friday')">ศุกร์</button>
       <button onclick="showDay(5, 'saturday')">เสาร์</button>
       <button onclick="showDay(6, 'sunday')">อาทิตย์</button>
+      <button onclick="showWeeklySummary()" style="background: #9c27b0; color: white;">สรุปรายสัปดาห์</button>
     </div>
     <div class="container" id="plan-container"></div>
 
@@ -106,210 +149,402 @@
         [
           {
             time: "09:00",
-            food: "มัทฉะเพียว",
-            vitamins: "Vitamin D3 5000 IU, Zinc 50 mg, B-Complex",
-            note: "พร้อมอาหารหรือเครื่องดื่ม",
+            food: "มัทฉะเพียว + ไข่ต้ม 1 ฟอง",
+            vitamins: ["Vitamin D3", "Zinc", "B-Complex"],
+            note: "กินพร้อมอาหาร/เครื่องดื่ม",
           },
           {
             time: "12:00",
-            food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักหลากสี, มัทฉะนมอัลมอนด์ (งดขนมปังช็อกโกแลต)",
-            vitamins: "CoQ10 100 mg, Omega-3",
-            note: "พร้อมอาหารเพื่อดูดซึมดีขึ้น",
+            food: "ข้าวหอมมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักนึ่ง 2 กำมือ",
+            vitamins: ["CoQ10", "Omega-3"],
+            note: "กินพร้อมอาหารไขมันดี",
           },
           {
             time: "16:00",
-            food: "โปรตีนสำเร็จรูป Hooray หรืออัลมอนด์ 20 กรัม",
-            vitamins: "-",
-            note: "ช่วยรักษามวลกล้ามเนื้อ",
+            food: "โปรตีน Hooray + อัลมอนด์ 10 เม็ด",
+            vitamins: [],
+            note: "ของว่างโปรตีนสูง",
           },
           {
             time: "19:00",
-            food: "สลัดโรล, น้ำเต้าหู้ใส่เม็ดแมงลัก + ฟองเต้าหู้",
-            vitamins: "EGCG 400 mg, Magnesium 100 mg",
-            note: "EGCG ก่อนอาหารหรือพร้อมอาหารไขมันต่ำ",
+            food: "สลัดโรล + น้ำเต้าหู้ไม่หวาน + ฟองเต้าหู้",
+            vitamins: ["EGCG", "Magnesium"],
+            note: "EGCG ควรกินก่อนหรือพร้อมอาหารไขมันต่ำ",
           },
         ],
         // อังคาร
         [
           {
             time: "09:00",
-            food: "มัทฉะเพียว",
-            vitamins: "Vitamin D3 5000 IU, Zinc 50 mg, B-Complex",
-            note: "พร้อมอาหารหรือเครื่องดื่ม",
+            food: "มัทฉะเพียว + ไข่ต้ม 1 ฟอง",
+            vitamins: ["Vitamin D3", "Zinc", "B-Complex"],
+            note: "เช่นเดียวกับวันจันทร์",
           },
           {
             time: "12:00",
-            food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักนึ่ง, มัทฉะนมอัลมอนด์",
-            vitamins: "CoQ10 100 mg, Omega-3",
-            note: "พร้อมอาหาร",
+            food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักสด/นึ่ง",
+            vitamins: ["CoQ10", "Omega-3"],
+            note: "เช่นเดียวกับวันจันทร์",
           },
           {
             time: "16:00",
-            food: "ชาเขียวร้อนไม่หวาน + อัลมอนด์ 20 กรัม",
-            vitamins: "EGCG 400 mg",
-            note: "กินก่อนชาเขียวร้อน",
+            food: "ถั่วอัลมอนด์ 15 เม็ด + ชาเขียวร้อน",
+            vitamins: [],
+            note: "ลดของหวาน",
           },
           {
             time: "19:00",
-            food: "สลัดโรล + น้ำเต้าหู้ใส่เม็ดแมงลัก",
-            vitamins: "Magnesium 100 mg",
-            note: "พร้อมอาหาร",
+            food: "สลัดโรล + น้ำเต้าหู้ไม่หวาน + ฟองเต้าหู้",
+            vitamins: ["EGCG", "Magnesium"],
+            note: "เช่นเดียวกับวันจันทร์",
           },
         ],
         // พุธ
         [
           {
             time: "09:00",
-            food: "มัทฉะเพียว",
-            vitamins: "Vitamin D3, Zinc, B-Complex",
-            note: "พร้อมอาหาร",
+            food: "มัทฉะเพียว + ไข่ต้ม 1 ฟอง",
+            vitamins: ["Vitamin D3", "Zinc", "B-Complex"],
+            note: "กินพร้อมอาหาร",
           },
           {
             time: "12:00",
-            food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักลวก, มัทฉะนมอัลมอนด์ (งดขนมต้ม)",
-            vitamins: "CoQ10, Omega-3",
-            note: "พร้อมอาหาร",
+            food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักนึ่ง 2 กำมือ",
+            vitamins: ["CoQ10", "Omega-3"],
+            note: "กินพร้อมอาหาร",
           },
           {
             time: "16:00",
-            food: "Hooray Protein",
-            vitamins: "EGCG 400 mg",
-            note: "ก่อนหรือพร้อมของว่าง",
+            food: "โปรตีน Hooray + ผลไม้ Low GI (ฝรั่ง/เบอร์รี่)",
+            vitamins: [],
+            note: "ของว่างเพื่อสุขภาพ",
           },
           {
             time: "19:00",
-            food: "สลัดผักสด + น้ำเต้าหู้",
-            vitamins: "Magnesium",
-            note: "พร้อมอาหาร",
+            food: "สลัดโรล + น้ำเต้าหู้ไม่หวาน",
+            vitamins: ["EGCG", "Magnesium"],
+            note: "ลดขนมต้มออก",
           },
         ],
         // พฤหัสฯ
         [
           {
             time: "09:00",
-            food: "มัทฉะเพียว",
-            vitamins: "Vitamin D3, Zinc, B-Complex",
-            note: "พร้อมอาหาร",
+            food: "มัทฉะเพียว + ไข่ต้ม",
+            vitamins: ["Vitamin D3", "Zinc", "B-Complex"],
+            note: "กินพร้อมอาหาร",
           },
           {
             time: "12:00",
-            food: "ข้าวไรซ์เบอร์รี่ ปลาทูน้ำพริกกะปิ + ชะอมทอด + ผักสด (งดขนมปังช็อกโกแลต)",
-            vitamins: "CoQ10, Omega-3",
-            note: "พร้อมอาหาร",
+            food: "ข้าวไรซ์เบอร์รี่ + ปลาทูน้ำพริกกะปิ + ผักสด + ชะอมทอด (ไม่อมน้ำมัน)",
+            vitamins: ["CoQ10", "Omega-3"],
+            note: "กินพร้อมอาหาร",
           },
           {
             time: "16:00",
-            food: "Hooray Protein",
-            vitamins: "EGCG",
-            note: "ก่อนหรือพร้อมของว่าง",
+            food: "โปรตีน Hooray + ชาเขียวร้อน",
+            vitamins: [],
+            note: "ของว่างเพื่อสุขภาพ",
           },
           {
             time: "19:00",
-            food: "สลัดโรล + น้ำเต้าหู้",
-            vitamins: "Magnesium",
-            note: "พร้อมอาหาร",
+            food: "สลัดโรล + น้ำเต้าหู้ไม่หวาน",
+            vitamins: ["EGCG", "Magnesium"],
+            note: "กินพร้อมอาหาร",
           },
         ],
         // ศุกร์
         [
           {
             time: "09:00",
-            food: "มัทฉะเพียว",
-            vitamins: "Vitamin D3, Zinc, B-Complex",
-            note: "พร้อมอาหาร",
+            food: "มัทฉะเพียว + ไข่ต้ม",
+            vitamins: ["Vitamin D3", "Zinc", "B-Complex"],
+            note: "กินพร้อมอาหาร",
           },
           {
             time: "12:00",
-            food: "ข้าวไรซ์เบอร์รี่ ปลาทูน้ำพริกกะปิ + ชะอมทอด + ผักสด",
-            vitamins: "CoQ10, Omega-3",
-            note: "พร้อมอาหาร",
+            food: "ข้าวไรซ์เบอร์รี่ + ปลาทูน้ำพริกกะปิ + ผักหลากสี",
+            vitamins: ["CoQ10", "Omega-3"],
+            note: "กินพร้อมอาหาร",
           },
           {
             time: "16:00",
-            food: "ชาเขียวร้อนไม่หวาน + อัลมอนด์ 20 กรัม",
-            vitamins: "EGCG",
-            note: "ก่อนชาเขียว",
+            food: "โปรตีน Hooray + ผลไม้ Low GI",
+            vitamins: [],
+            note: "ของว่างเพื่อสุขภาพ",
           },
           {
             time: "19:00",
-            food: "สลัดโรล + น้ำเต้าหู้",
-            vitamins: "Magnesium",
-            note: "พร้อมอาหาร",
+            food: "สลัดโรล + น้ำเต้าหู้ไม่หวาน",
+            vitamins: ["EGCG", "Magnesium"],
+            note: "กินพร้อมอาหาร",
           },
         ],
         // เสาร์
         [
           {
             time: "09:00",
-            food: "มัทฉะเพียว",
-            vitamins: "Vitamin D3, Zinc, B-Complex",
-            note: "พร้อมอาหาร",
+            food: "มัทฉะเพียว + ไข่ต้ม",
+            vitamins: ["Vitamin D3", "Zinc", "B-Complex"],
+            note: "กินพร้อมอาหาร",
           },
           {
             time: "12:00",
-            food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักหลากสี",
-            vitamins: "CoQ10, Omega-3",
-            note: "พร้อมอาหาร",
+            food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักนึ่ง",
+            vitamins: ["CoQ10", "Omega-3"],
+            note: "กินพร้อมอาหาร",
           },
           {
             time: "16:00",
-            food: "Hooray Protein",
-            vitamins: "EGCG",
-            note: "ก่อนของว่าง",
+            food: "อัลมอนด์ 15 เม็ด + ชาเขียวร้อน",
+            vitamins: [],
+            note: "ของว่างเพื่อสุขภาพ",
           },
           {
             time: "19:00",
-            food: "สลัดโรล + น้ำเต้าหู้",
-            vitamins: "Magnesium",
-            note: "พร้อมอาหาร",
+            food: "สลัดโรล + น้ำเต้าหู้ไม่หวาน",
+            vitamins: ["EGCG", "Magnesium"],
+            note: "กินพร้อมอาหาร",
           },
         ],
         // อาทิตย์
         [
           {
             time: "09:00",
-            food: "มัทฉะเพียว",
-            vitamins: "Vitamin D3, Zinc, B-Complex",
-            note: "พร้อมอาหาร",
+            food: "มัทฉะเพียว + ไข่ต้ม",
+            vitamins: ["Vitamin D3", "Zinc", "B-Complex"],
+            note: "กินพร้อมอาหาร",
           },
           {
             time: "12:00",
             food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักหลากสี",
-            vitamins: "CoQ10, Omega-3",
-            note: "พร้อมอาหาร",
+            vitamins: ["CoQ10", "Omega-3"],
+            note: "กินพร้อมอาหาร",
           },
           {
             time: "16:00",
-            food: "ชาเขียวร้อนไม่หวาน",
-            vitamins: "EGCG",
-            note: "ก่อนชาเขียว",
+            food: "โปรตีน Hooray + ผลไม้ Low GI",
+            vitamins: [],
+            note: "ของว่างเพื่อสุขภาพ",
           },
           {
             time: "19:00",
-            food: "สลัดโรล + น้ำเต้าหู้",
-            vitamins: "Magnesium",
-            note: "พร้อมอาหาร",
+            food: "สลัดโรล + น้ำเต้าหู้ไม่หวาน",
+            vitamins: ["EGCG", "Magnesium"],
+            note: "กินพร้อมอาหาร",
           },
         ],
       ];
 
-      function showDay(index, dayClass) {
-        const buttons = document.querySelectorAll(".day-buttons button");
-        buttons.forEach((btn, i) => {
-          btn.classList.toggle("active", i === index);
+      // ข้อมูลปริมาณที่ต้องกินต่อครั้ง (ปรับเป็น 1 เม็ดทุกตัว)
+      const vitaminDosage = {
+        "B-Complex": { dose: 1, unit: "เม็ด" },
+        "Vitamin D3": { dose: 1, unit: "เม็ด" },
+        "Omega-3": { dose: 1, unit: "เม็ด" },
+        "CoQ10": { dose: 1, unit: "เม็ด" },
+        "EGCG": { dose: 1, unit: "เม็ด" },
+        "Magnesium": { dose: 1, unit: "เม็ด" },
+        "Zinc": { dose: 1, unit: "เม็ด" }
+      };
+
+      // จำนวนคงเหลือ (จัดเก็บใน memory สำหรับ demo)
+      let vitaminStock = {
+        "B-Complex": 60,
+        "Vitamin D3": 120,
+        "Omega-3": 120, // ปรับจาก 240 เป็น 120 เพราะกิน 1 เม็ดแทน 2 เม็ด
+        "CoQ10": 120,
+        "EGCG": 90,
+        "Magnesium": 120, // ปรับจาก 240 เป็น 120 เพราะกิน 1 เม็ดแทน 2 เม็ด
+        "Zinc": 250
+      };
+
+      function calculateDayVitamins(dayIndex) {
+        const dayPlan = plans[dayIndex];
+        let totalVitamins = {};
+        
+        dayPlan.forEach(meal => {
+          meal.vitamins.forEach(vitamin => {
+            if (vitaminDosage[vitamin]) {
+              totalVitamins[vitamin] = (totalVitamins[vitamin] || 0) + vitaminDosage[vitamin].dose;
+            }
+          });
         });
-        const title = document.getElementById("planTitle");
-        title.className = dayClass;
-        const dayPlan = plans[index];
-        let html =
-          "<table><tr><th>เวลา</th><th>เมนูอาหาร</th><th>วิตามิน/อาหารเสริม</th><th>หมายเหตุ</th></tr>";
-        dayPlan.forEach((row) => {
-          html += `<tr><td class="time">${row.time}</td><td>${row.food}</td><td>${row.vitamins}</td><td class="note">${row.note}</td></tr>`;
-        });
-        html += "</table>";
-        document.getElementById("plan-container").innerHTML = html;
+        
+        return totalVitamins;
       }
-      showDay(0, "monday");
+
+      function calculateWeeklyVitamins() {
+        let weeklyTotal = {};
+        
+        for (let i = 0; i < 7; i++) {
+          const dayVitamins = calculateDayVitamins(i);
+          Object.entries(dayVitamins).forEach(([vitamin, amount]) => {
+            weeklyTotal[vitamin] = (weeklyTotal[vitamin] || 0) + amount;
+          });
+        }
+        
+        return weeklyTotal;
+      }
+
+      function updateStock(dayVitamins) {
+        Object.entries(dayVitamins).forEach(([vitamin, amount]) => {
+          if (vitaminStock[vitamin] !== undefined) {
+            vitaminStock[vitamin] = Math.max(0, vitaminStock[vitamin] - amount);
+          }
+        });
+      }
+
+      function showDay(index, dayClass) {
+        document.querySelectorAll('.day-buttons button').forEach((btn, i) => {
+          btn.classList.toggle('active', i === index);
+        });
+        
+        const title = document.getElementById('planTitle');
+        title.className = dayClass;
+        
+        const dayNames = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสฯ', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
+        const dayPlan = plans[index];
+        
+        let html = '<table><tr><th>เวลา</th><th>เมนูอาหาร</th><th>วิตามิน/อาหารเสริม</th><th>หมายเหตุ</th></tr>';
+        
+        dayPlan.forEach(row => {
+          const vitaminList = row.vitamins.map(v => {
+            if (vitaminDosage[v]) {
+              return `${v} (${vitaminDosage[v].dose} ${vitaminDosage[v].unit})`;
+            }
+            return v;
+          }).join(', ') || '-';
+          
+          html += `<tr>
+            <td class="time">${row.time}</td>
+            <td>${row.food}</td>
+            <td>${vitaminList}</td>
+            <td class="note">${row.note}</td>
+          </tr>`;
+        });
+        html += '</table>';
+
+        // คำนวณวิตามินรวมวันนี้
+        const dayVitamins = calculateDayVitamins(index);
+        
+        html += `<div class="vitamin-summary">
+          <h3>สรุปวิตามินวัน${dayNames[index]}</h3>`;
+        
+        Object.entries(dayVitamins).forEach(([vitamin, amount]) => {
+          const remaining = vitaminStock[vitamin];
+          const daysLeft = Math.floor(remaining / amount);
+          const lowStock = daysLeft < 10;
+          
+          html += `<div class="vitamin-item ${lowStock ? 'low-stock' : ''}">
+            <span class="vitamin-name">${vitamin}</span>
+            <div>
+              <span class="vitamin-usage">ใช้: ${amount} ${vitaminDosage[vitamin].unit}</span> | 
+              <span class="vitamin-remaining">เหลือ: ${remaining} ${vitaminDosage[vitamin].unit}</span> | 
+              <span class="vitamin-days-left">ใช้ได้อีก: ${daysLeft} วัน</span>
+            </div>
+          </div>`;
+        });
+        
+        html += `</div>
+          <button class="reset-button" onclick="resetStock()">รีเซ็ตจำนวนวิตามิน</button>
+          <button class="reset-button" onclick="consumeDay(${index})" style="background: #27ae60; margin-left: 10px;">บันทึกการกินวันนี้</button>`;
+        
+        document.getElementById('plan-container').innerHTML = html;
+      }
+
+      function showWeeklySummary() {
+        document.querySelectorAll('.day-buttons button').forEach((btn, i) => {
+          btn.classList.remove('active');
+          if (btn.textContent === 'สรุปรายสัปดาห์') {
+            btn.classList.add('active');
+          }
+        });
+        
+        const title = document.getElementById('planTitle');
+        title.className = '';
+        title.style.color = '#9c27b0';
+        
+        const weeklyVitamins = calculateWeeklyVitamins();
+        
+        let html = `<div class="weekly-summary">
+          <h3>🗓️ สรุปการใช้วิตามินทั้งสัปดาห์</h3>`;
+        
+        Object.entries(weeklyVitamins).forEach(([vitamin, weeklyAmount]) => {
+          const remaining = vitaminStock[vitamin];
+          const weeksLeft = Math.floor(remaining / weeklyAmount);
+          const daysLeft = Math.floor(remaining / (weeklyAmount / 7));
+          const lowStock = weeksLeft < 2;
+          
+          html += `<div class="vitamin-item ${lowStock ? 'low-stock' : ''}">
+            <span class="vitamin-name">${vitamin}</span>
+            <div>
+              <span class="vitamin-usage">ใช้/สัปดาห์: ${weeklyAmount} ${vitaminDosage[vitamin].unit}</span> | 
+              <span class="vitamin-remaining">เหลือ: ${remaining} ${vitaminDosage[vitamin].unit}</span> | 
+              <span class="vitamin-days-left">ใช้ได้อีก: ${weeksLeft} สัปดาห์ (${daysLeft} วัน)</span>
+            </div>
+          </div>`;
+        });
+        
+        html += `</div>
+          <button class="reset-button" onclick="resetStock()">รีเซ็ตจำนวนวิตามิน</button>
+          <button class="reset-button" onclick="consumeWeek()" style="background: #27ae60; margin-left: 10px;">บันทึกการกินทั้งสัปดาห์</button>`;
+        
+        document.getElementById('plan-container').innerHTML = html;
+      }
+
+      function consumeDay(dayIndex) {
+        const dayVitamins = calculateDayVitamins(dayIndex);
+        const dayNames = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสฯ', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
+        
+        if (confirm(`บันทึกการกินวิตามินวัน${dayNames[dayIndex]}?`)) {
+          updateStock(dayVitamins);
+          
+          // รีเฟรชหน้าปัจจุบัน
+          const dayClasses = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+          showDay(dayIndex, dayClasses[dayIndex]);
+          
+          alert(`บันทึกเรียบร้อย! วิตามินถูกหักออกจากสต็อกแล้ว`);
+        }
+      }
+
+      function consumeWeek() {
+        if (confirm('บันทึกการกินวิตามินทั้งสัปดาห์?')) {
+          const weeklyVitamins = calculateWeeklyVitamins();
+          updateStock(weeklyVitamins);
+          
+          showWeeklySummary();
+          alert('บันทึกเรียบร้อย! วิตามินทั้งสัปดาห์ถูกหักออกจากสต็อกแล้ว');
+        }
+      }
+
+      function resetStock() {
+        if (confirm('คุณต้องการรีเซ็ตจำนวนวิตามินกลับไปเป็นจำนวนเริ่มต้นหรือไม่?')) {
+          vitaminStock = {
+            "B-Complex": 60,
+            "Vitamin D3": 120,
+            "Omega-3": 120,
+            "CoQ10": 120,
+            "EGCG": 90,
+            "Magnesium": 120,
+            "Zinc": 250
+          };
+          
+          // รีเฟรชหน้าปัจจุบัน
+          const activeButton = document.querySelector('.day-buttons button.active');
+          if (activeButton.textContent === 'สรุปรายสัปดาห์') {
+            showWeeklySummary();
+          } else {
+            const dayIndex = Array.from(document.querySelectorAll('.day-buttons button')).indexOf(activeButton);
+            const dayClasses = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            showDay(dayIndex, dayClasses[dayIndex]);
+          }
+          
+          alert('รีเซ็ตเรียบร้อย!');
+        }
+      }
+
+      // แสดงวันจันทร์เป็นค่าเริ่มต้น
+      showDay(0, 'monday');
     </script>
   </body>
 </html>
