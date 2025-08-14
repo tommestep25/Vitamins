@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ตารางอาหารและวิตามิน 7 วัน</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #fafafa;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        text-align: center;
+        padding: 20px;
+        margin: 0;
+        transition: color 0.3s ease;
+        background-color: #000;
+      }
+      .monday {
+        color: #ffc107;
+        
+      }
+      .tuesday {
+        color: #e91e63;
+      }
+      .wednesday {
+        color: #4caf50;
+      }
+      .thursday {
+        color: #ff5722;
+      }
+      .friday {
+        color: #2193f0;
+      }
+      .saturday {
+        color: #ff0feb;
+      }
+      .sunday {
+        color: #ff0000
+      }
+
+      .day-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        background: #eee;
+        padding: 10px;
+      }
+      .day-buttons button {
+        margin: 5px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        background: #ccc;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .day-buttons button.active {
+        background: #4caf50;
+        color: white;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .time {
+        font-weight: bold;
+      }
+      .note {
+        font-size: 0.9em;
+        color: #555;
+      }
+      .container {
+        padding: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="planTitle">แผนเมนูอาหาร + วิตามิน 7 วัน</h1>
+    <div class="day-buttons">
+      <button onclick="showDay(0, 'monday')" class="active">จันทร์</button>
+      <button onclick="showDay(1, 'tuesday')">อังคาร</button>
+      <button onclick="showDay(2, 'wednesday')">พุธ</button>
+      <button onclick="showDay(3, 'thursday')">พฤหัสฯ</button>
+      <button onclick="showDay(4, 'friday')">ศุกร์</button>
+      <button onclick="showDay(5, 'saturday')">เสาร์</button>
+      <button onclick="showDay(6, 'sunday')">อาทิตย์</button>
+    </div>
+    <div class="container" id="plan-container"></div>
+
+    <script>
+      const plans = [
+        // จันทร์
+        [
+          {
+            time: "09:00",
+            food: "มัทฉะเพียว",
+            vitamins: "Vitamin D3 5000 IU, Zinc 50 mg, B-Complex",
+            note: "พร้อมอาหารหรือเครื่องดื่ม",
+          },
+          {
+            time: "12:00",
+            food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักหลากสี, มัทฉะนมอัลมอนด์ (งดขนมปังช็อกโกแลต)",
+            vitamins: "CoQ10 100 mg, Omega-3",
+            note: "พร้อมอาหารเพื่อดูดซึมดีขึ้น",
+          },
+          {
+            time: "16:00",
+            food: "โปรตีนสำเร็จรูป Hooray หรืออัลมอนด์ 20 กรัม",
+            vitamins: "-",
+            note: "ช่วยรักษามวลกล้ามเนื้อ",
+          },
+          {
+            time: "19:00",
+            food: "สลัดโรล, น้ำเต้าหู้ใส่เม็ดแมงลัก + ฟองเต้าหู้",
+            vitamins: "EGCG 400 mg, Magnesium 100 mg",
+            note: "EGCG ก่อนอาหารหรือพร้อมอาหารไขมันต่ำ",
+          },
+        ],
+        // อังคาร
+        [
+          {
+            time: "09:00",
+            food: "มัทฉะเพียว",
+            vitamins: "Vitamin D3 5000 IU, Zinc 50 mg, B-Complex",
+            note: "พร้อมอาหารหรือเครื่องดื่ม",
+          },
+          {
+            time: "12:00",
+            food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักนึ่ง, มัทฉะนมอัลมอนด์",
+            vitamins: "CoQ10 100 mg, Omega-3",
+            note: "พร้อมอาหาร",
+          },
+          {
+            time: "16:00",
+            food: "ชาเขียวร้อนไม่หวาน + อัลมอนด์ 20 กรัม",
+            vitamins: "EGCG 400 mg",
+            note: "กินก่อนชาเขียวร้อน",
+          },
+          {
+            time: "19:00",
+            food: "สลัดโรล + น้ำเต้าหู้ใส่เม็ดแมงลัก",
+            vitamins: "Magnesium 100 mg",
+            note: "พร้อมอาหาร",
+          },
+        ],
+        // พุธ
+        [
+          {
+            time: "09:00",
+            food: "มัทฉะเพียว",
+            vitamins: "Vitamin D3, Zinc, B-Complex",
+            note: "พร้อมอาหาร",
+          },
+          {
+            time: "12:00",
+            food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักลวก, มัทฉะนมอัลมอนด์ (งดขนมต้ม)",
+            vitamins: "CoQ10, Omega-3",
+            note: "พร้อมอาหาร",
+          },
+          {
+            time: "16:00",
+            food: "Hooray Protein",
+            vitamins: "EGCG 400 mg",
+            note: "ก่อนหรือพร้อมของว่าง",
+          },
+          {
+            time: "19:00",
+            food: "สลัดผักสด + น้ำเต้าหู้",
+            vitamins: "Magnesium",
+            note: "พร้อมอาหาร",
+          },
+        ],
+        // พฤหัสฯ
+        [
+          {
+            time: "09:00",
+            food: "มัทฉะเพียว",
+            vitamins: "Vitamin D3, Zinc, B-Complex",
+            note: "พร้อมอาหาร",
+          },
+          {
+            time: "12:00",
+            food: "ข้าวไรซ์เบอร์รี่ ปลาทูน้ำพริกกะปิ + ชะอมทอด + ผักสด (งดขนมปังช็อกโกแลต)",
+            vitamins: "CoQ10, Omega-3",
+            note: "พร้อมอาหาร",
+          },
+          {
+            time: "16:00",
+            food: "Hooray Protein",
+            vitamins: "EGCG",
+            note: "ก่อนหรือพร้อมของว่าง",
+          },
+          {
+            time: "19:00",
+            food: "สลัดโรล + น้ำเต้าหู้",
+            vitamins: "Magnesium",
+            note: "พร้อมอาหาร",
+          },
+        ],
+        // ศุกร์
+        [
+          {
+            time: "09:00",
+            food: "มัทฉะเพียว",
+            vitamins: "Vitamin D3, Zinc, B-Complex",
+            note: "พร้อมอาหาร",
+          },
+          {
+            time: "12:00",
+            food: "ข้าวไรซ์เบอร์รี่ ปลาทูน้ำพริกกะปิ + ชะอมทอด + ผักสด",
+            vitamins: "CoQ10, Omega-3",
+            note: "พร้อมอาหาร",
+          },
+          {
+            time: "16:00",
+            food: "ชาเขียวร้อนไม่หวาน + อัลมอนด์ 20 กรัม",
+            vitamins: "EGCG",
+            note: "ก่อนชาเขียว",
+          },
+          {
+            time: "19:00",
+            food: "สลัดโรล + น้ำเต้าหู้",
+            vitamins: "Magnesium",
+            note: "พร้อมอาหาร",
+          },
+        ],
+        // เสาร์
+        [
+          {
+            time: "09:00",
+            food: "มัทฉะเพียว",
+            vitamins: "Vitamin D3, Zinc, B-Complex",
+            note: "พร้อมอาหาร",
+          },
+          {
+            time: "12:00",
+            food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักหลากสี",
+            vitamins: "CoQ10, Omega-3",
+            note: "พร้อมอาหาร",
+          },
+          {
+            time: "16:00",
+            food: "Hooray Protein",
+            vitamins: "EGCG",
+            note: "ก่อนของว่าง",
+          },
+          {
+            time: "19:00",
+            food: "สลัดโรล + น้ำเต้าหู้",
+            vitamins: "Magnesium",
+            note: "พร้อมอาหาร",
+          },
+        ],
+        // อาทิตย์
+        [
+          {
+            time: "09:00",
+            food: "มัทฉะเพียว",
+            vitamins: "Vitamin D3, Zinc, B-Complex",
+            note: "พร้อมอาหาร",
+          },
+          {
+            time: "12:00",
+            food: "ข้าวมันปูอกไก่ย่าง + ไข่ลวก 2 ฟอง + ผักหลากสี",
+            vitamins: "CoQ10, Omega-3",
+            note: "พร้อมอาหาร",
+          },
+          {
+            time: "16:00",
+            food: "ชาเขียวร้อนไม่หวาน",
+            vitamins: "EGCG",
+            note: "ก่อนชาเขียว",
+          },
+          {
+            time: "19:00",
+            food: "สลัดโรล + น้ำเต้าหู้",
+            vitamins: "Magnesium",
+            note: "พร้อมอาหาร",
+          },
+        ],
+      ];
+
+      function showDay(index, dayClass) {
+        const buttons = document.querySelectorAll(".day-buttons button");
+        buttons.forEach((btn, i) => {
+          btn.classList.toggle("active", i === index);
+        });
+        const title = document.getElementById("planTitle");
+        title.className = dayClass;
+        const dayPlan = plans[index];
+        let html =
+          "<table><tr><th>เวลา</th><th>เมนูอาหาร</th><th>วิตามิน/อาหารเสริม</th><th>หมายเหตุ</th></tr>";
+        dayPlan.forEach((row) => {
+          html += `<tr><td class="time">${row.time}</td><td>${row.food}</td><td>${row.vitamins}</td><td class="note">${row.note}</td></tr>`;
+        });
+        html += "</table>";
+        document.getElementById("plan-container").innerHTML = html;
+      }
+      showDay(0, "monday");
+    </script>
+  </body>
+</html>
